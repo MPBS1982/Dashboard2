@@ -26,11 +26,15 @@ export function useSalesData() {
     },
   })
 
-  const insertSalesDataWithCallback = (records: SalesRecord[], callback?: () => void) => {
+  const insertSalesDataWithCallback = (records: SalesRecord[], callback?: () => void, onError?: (error: Error) => void) => {
     insertMutation.mutate(records, {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['salesData'] })
         if (callback) callback()
+      },
+      onError: (error: Error) => {
+        console.error('Erro ao inserir dados:', error)
+        if (onError) onError(error)
       },
     })
   }
